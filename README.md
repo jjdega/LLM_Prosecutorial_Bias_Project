@@ -12,6 +12,8 @@ This project investigates whether large language models (LLMs) exhibit systemati
 
 **Models tested:** Claude Sonnet 4.6 (Anthropic), GPT-4o (OpenAI), Gemini 2.5 Flash (Google)
 
+**Poster:** You can view this project's poster overview at: dartgo.org/llm_prosecutorial_bias_project_poster OR https://canva.link/6r975ton2vbtgjg
+
 ## Repository Structure
 
     LLM_Prosecutorial_Bias_Project/
@@ -19,26 +21,11 @@ This project investigates whether large language models (LLMs) exhibit systemati
     ├── README.md    # This file
     └── outputs/     # Generated outputs (not tracked)
 
-## Data Access
 
-Install the aihuman R package:
-
-    install.packages("aihuman")
-    library(aihuman)
-    data(NCAdata)
-    data(PSAdata)
+## Data Access/Citation
 
 Original RCT: Ben-Michael, Eli, Daniel Greiner, Melody Huang, Kosuke Imai, Zhichao Jiang, and Sooahn Shin. 2025. “Replication Data for: Does AI Help Humans Make Better Decisions?: A Statistical Evaluation Framework for Experimental and Observational Studies.” Harvard Dataverse. https://doi.org/10.7910/DVN/KMM8WN.
 
-## Reproduction
-
-    install.packages(c("tidyverse","aihuman","sandwich","lmtest","modelsummary",
-      "patchwork","scales","openxlsx","showtext","ggh4x","httr2","jsonlite"))
-
-Set RERUN_API <- TRUE and supply API keys only to re-collect data. With cached RDS files:
-
-    setwd("/path/to/LLM_Prosecutorial_Bias_Project")
-    source("main.R")
 
 ## Key Results
 
@@ -47,8 +34,6 @@ Set RERUN_API <- TRUE and supply API keys only to re-collect data. With cached R
 | Claude Sonnet 4.6 | 62.9% | 39.6% | 70.1% | 25.4% |
 | GPT-4o | 53.3% | 34.1% | 28.1% | 25.4% |
 | Gemini 2.5 Flash | 58.6% | 35.1% | 32.1% | 25.4% |
-
-False positive rate: Claude Exp 1A = 62.6% vs human 27.7%.
 
 ## Citation
 
