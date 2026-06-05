@@ -21,6 +21,8 @@ This project investigates whether large language models (LLMs) exhibit systemati
     ├── README.md    # This file
     └── outputs/     # Generated outputs (not tracked)
 
+**Code Note**
+This repository consolidated this project's code and is meant to be run as one file. While running the project, I used different code and then consolidated it here. Note that bugs may exist due to this translation. 
 
 ## Data Access/Citation
 
