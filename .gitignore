@@ -1,0 +1,5 @@
+*.rds
+outputs/
+.Rhistory
+.RData
+set_keys.sh
