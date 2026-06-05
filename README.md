@@ -1,8 +1,8 @@
 # Does AI Think Like a Prosecutor?
 ### Measuring a Prosecutorial Bias in LLM Bail Decisions: A Cross-Model Comparison of Cash Bail Decisions from Dane County, WI
 
-**JJ Dega** · GOVT 20.12: Politics and AI · Dartmouth College · Spring 2026
-Supervised by Adam Breuer
+**JJ Dega** | GOVT 20.12: Politics and AI | Dartmouth College | Spring 2026
+Supervised by Professor Adam Breuer
 
 ## Overview
 
@@ -52,7 +52,7 @@ False positive rate: Claude Exp 1A = 62.6% vs human 27.7%.
 
 ## Citation
 
-Dega, JJ (2026). Does AI Think Like a Prosecutor? Undergraduate research paper, GOVT 20.12, Dartmouth College.
+Dega, JJ (2026). Does AI Think Like a Prosecutor? Undergraduate Research Project, Dartmouth College.
 
 ## Acknowledgments
 
