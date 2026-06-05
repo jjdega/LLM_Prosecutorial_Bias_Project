@@ -1,7 +1,6 @@
 # =============================================================================
 # main.R
-# Does AI Think Like a Prosecutor? Measuring Directional Bias and
-# Classification Accuracy of LLMs in Pretrial Decision-Making
+# Does AI Think Like a Prosecutor?
 #
 # JJ Dega · GOVT 20.12 · Dartmouth College · Spring 2026
 # GitHub: https://github.com/jjdega/LLM_Prosecutorial_Bias_Project
@@ -13,11 +12,62 @@
 #      to reproduce all analysis and figures without API calls
 # =============================================================================
 
+# Table of Contents (Note: Not all tests were included in the final poster presentation)
+# Output checklist (Section 10.5):
+#   table1_[model].csv                    — Section 3.2
+#   table1_combined.csv                   — Section 3.2
+#   fig1_bail_rates_[model].png           — Section 3.3
+#   fig2_confusion_[model].png            — Section 3.4
+#   fig3_fpr_[model].png                  — Section 3.5
+#   fig4_bounds_[model]_[cond].png        — Section 4.2
+#   fig4_bounds_subgroup_[model]_[cond]   — Section 4.3
+#   fig5_preference_[model]_[cond].png    — Section 4.4
+#   fig6_agreement_[model]_[cond].png     — Section 4.5
+#   agreement_[model]_[cond].csv          — Section 4.5
+#   fig7_racial_disparity_[model].png     — Section 5.2
+#   fig8_felony_subgroup_[model].png      — Section 5.3
+#   fig9_violent_subgroup_[model].png     — Section 5.3
+#   table2_anchoring_[model].csv          — Section 6.3
+#   table2_anchoring_summary.csv          — Section 6.2
+#   table2_anchoring_subgroup.csv         — Section 6.2
+#   fig10_arglength_[model].png           — Section 7A
+#   fig11_stance_[model].png              — Section 7B
+#   stance_scores_[model].csv             — Section 7B
+#   api_cache_[model]_exp2_stance.csv     — Section 7B cache
+#   fig12_judge_scores_[model].png        — Section 7C
+#   llm_judge_scores_[gen]_eval_[eval].csv — Section 7C
+#   api_cache_[model]_exp2_judge_eval.csv — Section 7C cache
+#   table3_temp_robustness_[model]_[cond].csv — Section 7D
+#   fig13_temp_robustness_[model].png     — Section 7D
+#   api_cache_[model]_[cond]_temp[T].csv  — Section 7D cache
+#   table_A_lpm_[model].{csv,txt}         — Section 8.1
+#   table_B_disparity_[model].{csv,txt}   — Section 8.2
+#   table_C_divergence_[model].{csv,txt}  — Section 8.3
+#   table_D_pooled_[model].{csv,txt}      — Section 8.4
+#   table_E_crossmodel_summary.csv        — Section 9.1
+#   fig14_crossmodel_bail_rates.png       — Section 9.2
+#   fig15_crossmodel_bounds.png           — Section 9.3
+#   fig16_crossmodel_racial_gap.png       — Section 9.4
+#   fig16_crossmodel_racial_gap_heatmap   — Section 9.4
+#   nuis_func.rds / nuis_func_ai.rds      — Section 2.2
+#   nuis_[model]_[cond].rds (×9 pairs)   — Section 2.2
+#
+# FOR PUBLIC USE: Items requiring user action before running:
+#   1. [Sec 2.2]  Confirm ~1-3 hr first-run time for nuisance function fitting.
+#   2. [Sec 7]    Inspect parse_exp2_response() sample output; adjust delimiter
+#                 pattern if "=== SAMPLE ===" printout shows different structure.
+#   3. [Sec 7B]   Set ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY.
+#                 Confirm ~11,346 stance-scoring API calls before running.
+#   4. [Sec 7C]   Confirm ~5,673 cross-model evaluation API calls before running.
+#   5. [Sec 7D]   Confirm ~33,938 temperature-robustness API calls before running.
+
 # ── Global flags ──────────────────────────────────────────────────────────────
-RERUN_API <- FALSE   # Set TRUE only to re-run data collection (costs ~$25 USD)
+RERUN_API <- FALSE   # Set TRUE only to re-run data collection (total project cost:$312.15 USD)
+# Code Note: This base code is meant to run in R, but due to API constraints and the length of time it took for some tests, I broke it into multiple terminals.
+# API Note: Some tests failed due to credit balance reload issues. For Experiments 1a/1b/2 to all run, the total cost reached ~25 per model.
 
 # ── API keys (only used if RERUN_API == TRUE) ─────────────────────────────────
-# Replace with real keys to re-run data collection. Never commit real keys.
+# Replace with real keys to re-run data collection.
 if (RERUN_API) {
   Sys.setenv(ANTHROPIC_API_KEY = "API-KEY-HERE")
   Sys.setenv(OPENAI_API_KEY    = "API-KEY-HERE")
@@ -33,9 +83,7 @@ if (RERUN_API) {
 
 # =============================================================================
 # analysis.R
-# Does AI Think Like a Prosecutor? Measuring Directional Bias and
-# Classification Accuracy of LLMs in Pretrial Decision-Making
-# GOVT 20.12 · JJ Dega · Dartmouth College · Spring 2026
+# Does AI Think Like a Prosecutor?
 # Spec: spec_stats_dega_v2.docx
 # =============================================================================
 
@@ -99,7 +147,7 @@ walk(names(models), function(m) {
 # SECTION 2: DATA PREPARATION
 # =============================================================================
 
-# --- 2.1  Load base data and build covariate matrix ---
+# --- 2.1  Load base data and build covariate matrix (NOTE: Much of this code was adapted for my specific research question from the Ben-Michael, et al. 2025 dataset and aihuman package, https://doi.org/10.7910/DVN/KMM8WN)---
 
 data(NCAdata, package = "aihuman")
 data(PSAdata, package = "aihuman")
@@ -341,7 +389,7 @@ write_csv(
   "outputs/table1_combined.csv"
 )
 
-# Consistent color scheme used throughout all figures
+# Consistent color scheme used for all figures (NOTE: These colors are different from the poster presentation to distinguish projects)
 cond_colors <- c(
   "Exp 1A: Facts Only"   = "#1B3F6B",   # navy
   "Exp 1B: Facts + PSA"  = "#4682B4",   # steel blue
@@ -1118,7 +1166,7 @@ for (generator_model in names(models)) {
 
 # =============================================================================
 # PROMPT INFRASTRUCTURE
-# Functions mirror the original data-collection script exactly.
+# Functions mirror the original data-collection script 
 # Source column names for NCAdata are printed below at startup so you can
 # verify the AnyFelony / AnyViolentCharge mappings before the first run.
 # =============================================================================
@@ -1343,15 +1391,15 @@ run_temp_exp2_case_cached <- function(idx, model_name, temp, cache_file) {
 
   # Turn 1: prosecution argument
   pros_raw <- call_api_text(model_name, make_prompt_2_prosecution(idx),
-                            max_tokens = 400, temperature = temp)
+                           , temperature = temp)
 
   # Turn 2: defense argument
   def_raw  <- call_api_text(model_name, make_prompt_2_defense(idx),
-                            max_tokens = 400, temperature = temp)
+                          , temperature = temp)
 
   # Turn 3: judicial decision, conditioned on both arguments
   jud_raw  <- call_api_text(model_name, make_prompt_2_judge(idx, pros_raw, def_raw),
-                            max_tokens = 50, temperature = temp)
+                            , temperature = temp)
 
   dec <- case_when(
     grepl("(?i)detain|cash bail",       jud_raw, perl = TRUE) ~ 1L,
@@ -1513,7 +1561,7 @@ for (model_name in names(models)) {
 # =============================================================================
 # All models use OLS (linear probability model) with HC2 heteroskedasticity-
 # robust standard errors via sandwich::vcovHC + lmtest::coeftest.
-# Tables exported as both .csv (machine-readable) and .txt (human-readable).
+# Tables exported as both .csv and .txt.
 
 # Helper: export via modelsummary in two formats
 export_tables <- function(fit_list, se_list, stem) {
@@ -1718,65 +1766,15 @@ ggsave("outputs/fig16_crossmodel_racial_gap_heatmap.png",
 # =============================================================================
 # END OF analysis.R
 # All outputs written to outputs/
-#
-# Output checklist (Section 10.5):
-#   table1_[model].csv                    — Section 3.2
-#   table1_combined.csv                   — Section 3.2
-#   fig1_bail_rates_[model].png           — Section 3.3
-#   fig2_confusion_[model].png            — Section 3.4
-#   fig3_fpr_[model].png                  — Section 3.5
-#   fig4_bounds_[model]_[cond].png        — Section 4.2
-#   fig4_bounds_subgroup_[model]_[cond]   — Section 4.3
-#   fig5_preference_[model]_[cond].png    — Section 4.4
-#   fig6_agreement_[model]_[cond].png     — Section 4.5
-#   agreement_[model]_[cond].csv          — Section 4.5
-#   fig7_racial_disparity_[model].png     — Section 5.2
-#   fig8_felony_subgroup_[model].png      — Section 5.3
-#   fig9_violent_subgroup_[model].png     — Section 5.3
-#   table2_anchoring_[model].csv          — Section 6.3
-#   table2_anchoring_summary.csv          — Section 6.2
-#   table2_anchoring_subgroup.csv         — Section 6.2
-#   fig10_arglength_[model].png           — Section 7A
-#   fig11_stance_[model].png              — Section 7B
-#   stance_scores_[model].csv             — Section 7B
-#   api_cache_[model]_exp2_stance.csv     — Section 7B cache
-#   fig12_judge_scores_[model].png        — Section 7C
-#   llm_judge_scores_[gen]_eval_[eval].csv — Section 7C
-#   api_cache_[model]_exp2_judge_eval.csv — Section 7C cache
-#   table3_temp_robustness_[model]_[cond].csv — Section 7D
-#   fig13_temp_robustness_[model].png     — Section 7D
-#   api_cache_[model]_[cond]_temp[T].csv  — Section 7D cache
-#   table_A_lpm_[model].{csv,txt}         — Section 8.1
-#   table_B_disparity_[model].{csv,txt}   — Section 8.2
-#   table_C_divergence_[model].{csv,txt}  — Section 8.3
-#   table_D_pooled_[model].{csv,txt}      — Section 8.4
-#   table_E_crossmodel_summary.csv        — Section 9.1
-#   fig14_crossmodel_bail_rates.png       — Section 9.2
-#   fig15_crossmodel_bounds.png           — Section 9.3
-#   fig16_crossmodel_racial_gap.png       — Section 9.4
-#   fig16_crossmodel_racial_gap_heatmap   — Section 9.4
-#   nuis_func.rds / nuis_func_ai.rds      — Section 2.2
-#   nuis_[model]_[cond].rds (×9 pairs)   — Section 2.2
-#
-# Items requiring user action before running:
-#   1. [Sec 2.2]  Confirm ~1-3 hr first-run time for nuisance function fitting.
-#   2. [Sec 7]    Inspect parse_exp2_response() sample output; adjust delimiter
-#                 pattern if "=== SAMPLE ===" printout shows different structure.
-#   3. [Sec 7B]   Set ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY.
-#                 Confirm ~11,346 stance-scoring API calls before running.
-#   4. [Sec 7C]   Confirm ~5,673 cross-model evaluation API calls before running.
-#   5. [Sec 7D]   Confirm ~33,938 temperature-robustness API calls before running.
 # =============================================================================
 
 # =============================================================================
 # SECTION 10: POSTER FIGURES
-# Produces all publication-quality figures to outputs/poster/
-# No API calls — reads from cached RDS and CSV files only
+# Produces all figures to outputs/poster/
 # =============================================================================
 
 # poster_figures.R
 # Publication-quality poster figures for "Does AI Think Like a Prosecutor?"
-# All data hardcoded except Figure 4 (reads /Users/jj/outputs/df_exp2.rds).
 # Extra required packages: install.packages(c("ggh4x", "patchwork")) if missing.
 
 library(tidyverse)
@@ -1792,7 +1790,7 @@ showtext_auto()
 showtext_opts(dpi = 300)
 
 # ── Output directory ──────────────────────────────────────────────────────────
-OUT <- "/Users/jj/outputs/poster/"
+OUT <- "YOUR-OUTPUT-HERE"
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
 # ── Colour palette ────────────────────────────────────────────────────────────
@@ -1988,7 +1986,7 @@ tblB <- tribble(
 # ─────────────────────────────────────────────────────────────────────────────
 # FIGURE 1 — Cash Bail Rates
 # ─────────────────────────────────────────────────────────────────────────────
-# CRITICAL: single shared position_dodge object for both geom_col and geom_errorbar
+# Single shared position_dodge object for both geom_col and geom_errorbar
 dodge <- position_dodge(width = 0.8)
 
 fig1 <- ggplot(tbl1, aes(x = condition_label, y = bail_rate_est, fill = model_name)) +
@@ -2028,7 +2026,7 @@ message("✓ Figure 1 saved")
 # ─────────────────────────────────────────────────────────────────────────────
 # FIGURE 2 — False Positive Rates
 # ─────────────────────────────────────────────────────────────────────────────
-# CRITICAL: new dodge2 object (separate from dodge) — same single object for both layers
+# New dodge2 object (separate from dodge) — same single object for both layers
 dodge2 <- position_dodge(width = 0.8)
 
 fig2 <- ggplot(tbl1, aes(x = condition_label, y = fpr_est, fill = model_name)) +
@@ -2075,7 +2073,7 @@ message("✓ Figure 2 saved")
 # ─────────────────────────────────────────────────────────────────────────────
 pal3 <- pal[1:3]  # LLM models only; Human Judge not in regression panels
 
-# CRITICAL: single shared dodge for both geom_errorbarh and geom_point
+# Single shared dodge for both geom_errorbarh and geom_point
 dodge3a <- position_dodge(width = 0.65)
 
 fig3a <- ggplot(tblA, aes(x = estimate, y = term_label,
@@ -2124,7 +2122,7 @@ message("✓ Figure 3A saved")
 # FIGURE 3B — Racial Disparity: Bivariate vs Conditional
 # Conditions stacked vertically (3 rows); panel_label as spanning top strip.
 # ─────────────────────────────────────────────────────────────────────────────
-# CRITICAL: single shared dodge for both geom_errorbarh and geom_point
+# Single shared dodge for both geom_errorbarh and geom_point
 dodge3b <- position_dodge(width = 0.6)
 
 fig3b <- ggplot(tblB, aes(x = estimate, y = model,
@@ -2257,6 +2255,5 @@ message("✅ All figures written to: ", OUT)
 
 # =============================================================================
 # END OF main.R
-# All outputs written to /outputs/ and /outputs/poster/
 # See README.md for reproduction instructions and data access
 # =============================================================================
