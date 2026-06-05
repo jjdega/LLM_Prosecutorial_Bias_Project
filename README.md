@@ -2,13 +2,13 @@
 ### Measuring Directional Bias and Classification Accuracy of LLMs in Pretrial Decision-Making
 
 **JJ Dega** · GOVT 20.12: Politics and AI · Dartmouth College · Spring 2026
-Supervised by Professor Breuer · Hanlon Scholars Program
+Supervised by Adam Breuer
 
 ## Overview
 
-This project investigates whether large language models (LLMs) exhibit systematic prosecutorial bias in pretrial bail decisions. Using a randomized controlled trial dataset from Dane County, Wisconsin (n = 1,891 first-appearance hearings), three frontier LLMs are evaluated under three experimental conditions and compared against human judge decisions using the Ben-Michael et al. (2025) causal inference framework.
+This project investigates whether large language models (LLMs) exhibit systematic prosecutorial bias in pretrial bail decisions. Using a randomized controlled trial dataset from Dane County, Wisconsin (n = 1,891 first-appearance hearings), three frontier LLMs are evaluated under three experimental conditions and compared against human judge decisions using the Ben-Michael et al. (2025) causal inference framework and dataset.
 
-**Primary finding:** All three LLMs recommend cash bail at 2-3x the human judge rate (25.4% baseline). The adversarial multi-agent pipeline amplifies rather than corrects this bias. Non-White defendants face disproportionately higher LLM detention rates across all conditions.
+**Primary finding:** All three LLMs recommend cash bail at up to 2.8 times the human judge rate (25.4% baseline). The adversarial multi-agent pipeline amplifies rather than corrects this bias. Non-White defendants face disproportionately higher LLM detention rates across all conditions.
 
 **Models tested:** Claude Sonnet 4.6 (Anthropic), GPT-4o (OpenAI), Gemini 2.5 Flash (Google)
 
@@ -28,9 +28,7 @@ Install the aihuman R package:
     data(NCAdata)
     data(PSAdata)
 
-Original RCT: Stevenson & Doleac (2022). Harvard Dataverse. https://doi.org/10.7910/DVN/KMM8WN
-
-Causal framework: Ben-Michael et al. (2025). PNAS, 122(4). https://doi.org/10.1073/pnas.2301459121
+Original RCT: Ben-Michael, Eli, Daniel Greiner, Melody Huang, Kosuke Imai, Zhichao Jiang, and Sooahn Shin. 2025. “Replication Data for: Does AI Help Humans Make Better Decisions?: A Statistical Evaluation Framework for Experimental and Observational Studies.” Harvard Dataverse. https://doi.org/10.7910/DVN/KMM8WN.
 
 ## Reproduction
 
@@ -54,10 +52,10 @@ False positive rate: Claude Exp 1A = 62.6% vs human 27.7%.
 
 ## Citation
 
-Dega, J.J. (2026). Does AI Think Like a Prosecutor? Undergraduate research paper, GOVT 20.12, Dartmouth College.
+Dega, JJ (2026). Does AI Think Like a Prosecutor? Undergraduate research paper, GOVT 20.12, Dartmouth College.
 
 ## Acknowledgments
 
-Built on the aihuman R package and Ben-Michael et al. (2025). Dataset by Stevenson & Doleac via Harvard Dataverse. Supervised by Professor Breuer.
+Built on the aihuman R package from Ben-Michael et al. (2025) via Harvard Dataverse. Supervised by Professor Adam Breuer and Rasmus Torp.
 
 Questions: jj.f.dega.26@dartmouth.edu
