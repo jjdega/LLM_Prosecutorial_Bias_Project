@@ -1,0 +1,63 @@
+# Does AI Think Like a Prosecutor?
+### Measuring Directional Bias and Classification Accuracy of LLMs in Pretrial Decision-Making
+
+**JJ Dega** · GOVT 20.12: Politics and AI · Dartmouth College · Spring 2026
+Supervised by Professor Breuer · Hanlon Scholars Program
+
+## Overview
+
+This project investigates whether large language models (LLMs) exhibit systematic prosecutorial bias in pretrial bail decisions. Using a randomized controlled trial dataset from Dane County, Wisconsin (n = 1,891 first-appearance hearings), three frontier LLMs are evaluated under three experimental conditions and compared against human judge decisions using the Ben-Michael et al. (2025) causal inference framework.
+
+**Primary finding:** All three LLMs recommend cash bail at 2-3x the human judge rate (25.4% baseline). The adversarial multi-agent pipeline amplifies rather than corrects this bias. Non-White defendants face disproportionately higher LLM detention rates across all conditions.
+
+**Models tested:** Claude Sonnet 4.6 (Anthropic), GPT-4o (OpenAI), Gemini 2.5 Flash (Google)
+
+## Repository Structure
+
+    LLM_Prosecutorial_Bias_Project/
+    ├── main.R       # Complete analysis pipeline
+    ├── README.md    # This file
+    └── outputs/     # Generated outputs (not tracked)
+
+## Data Access
+
+Install the aihuman R package:
+
+    install.packages("aihuman")
+    library(aihuman)
+    data(NCAdata)
+    data(PSAdata)
+
+Original RCT: Stevenson & Doleac (2022). Harvard Dataverse. https://doi.org/10.7910/DVN/KMM8WN
+
+Causal framework: Ben-Michael et al. (2025). PNAS, 122(4). https://doi.org/10.1073/pnas.2301459121
+
+## Reproduction
+
+    install.packages(c("tidyverse","aihuman","sandwich","lmtest","modelsummary",
+      "patchwork","scales","openxlsx","showtext","ggh4x","httr2","jsonlite"))
+
+Set RERUN_API <- TRUE and supply API keys only to re-collect data. With cached RDS files:
+
+    setwd("/path/to/LLM_Prosecutorial_Bias_Project")
+    source("main.R")
+
+## Key Results
+
+| Model | Exp 1A | Exp 1B | Exp 2 | Human |
+|-------|--------|--------|-------|-------|
+| Claude Sonnet 4.6 | 62.9% | 39.6% | 70.1% | 25.4% |
+| GPT-4o | 53.3% | 34.1% | 28.1% | 25.4% |
+| Gemini 2.5 Flash | 58.6% | 35.1% | 32.1% | 25.4% |
+
+False positive rate: Claude Exp 1A = 62.6% vs human 27.7%.
+
+## Citation
+
+Dega, J.J. (2026). Does AI Think Like a Prosecutor? Undergraduate research paper, GOVT 20.12, Dartmouth College.
+
+## Acknowledgments
+
+Built on the aihuman R package and Ben-Michael et al. (2025). Dataset by Stevenson & Doleac via Harvard Dataverse. Supervised by Professor Breuer.
+
+Questions: jj.f.dega.26@dartmouth.edu
