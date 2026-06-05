@@ -1,5 +1,5 @@
 # Does AI Think Like a Prosecutor?
-### Measuring Directional Bias and Classification Accuracy of LLMs in Pretrial Decision-Making
+### Measuring a Prosecutorial Bias in LLM Bail Decisions: A Cross-Model Comparison of Cash Bail Decisions from Dane County, WI
 
 **JJ Dega** · GOVT 20.12: Politics and AI · Dartmouth College · Spring 2026
 Supervised by Adam Breuer
