@@ -2,7 +2,7 @@
 ### Measuring a Prosecutorial Bias in LLM Bail Decisions: A Cross-Model Comparison of Cash Bail Decisions from Dane County, WI
 
 **JJ Dega** | GOVT 20.12: Politics and AI | Dartmouth College | Spring 2026
-Supervised by Professor Adam Breuer
+Supervised by Professor Adam Breuer and Rasmus Torp
 
 ## Overview
 
